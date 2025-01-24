@@ -26,8 +26,7 @@ void Child::run<CHILD_A>() {
     if (encoded.first == a || encoded.first == b || encoded.second == a || encoded.second == b ||
         encoded.first == encoded.second || encoded.first < 1 || encoded.first > 100 || encoded.second < 1 ||
         encoded.second > 100) {
-        // tutaj kiedys bedziemy chcieli, zeby zwracalo errora
-        exit(1);
+        answer({encoded.first, encoded.second, true});
     }
 
     userSend(encoded);
@@ -37,7 +36,7 @@ template <>
 void Child::run<CHILD_B>() {
     auto encoded = userReceive<DATA_TYPE>();
     auto decoded = decode(std::make_pair(encoded.first, encoded.second));
-    answer({decoded.first, decoded.second});
+    answer({decoded.first, decoded.second, false});
 }
 
 int main() {
@@ -48,7 +47,11 @@ int main() {
 
     try {
         auto [answer, _, message_length] = Master::masterMain();
-        printExitMessage(ExitType::ANSWER, answer == ANSWER_TYPE{a, b});
+        if (answer.invalid_encoding) {
+            printExitMessage(ExitType::ERROR, "INVALID_ENCODING", answer.first, answer.second, "FOR VALUES", a, b);
+            return 0;
+        }
+        printExitMessage(ExitType::ANSWER, answer == ANSWER_TYPE{a, b, false});
     } catch (const CommunicationError &e) {
         panic(ErrorType::COMMUNICATION_ERROR);
     }
