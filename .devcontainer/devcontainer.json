@@ -1,0 +1,12 @@
+{
+  "image": "gcc:12",
+  "waitFor": "onCreateCommand",
+  "postAttachCommand": {
+    "server": "./compile.sh 1"
+  },
+  "customizations": {
+    "codespaces": {
+      "openFiles": ["par.cpp"]
+    }
+  }
+}
