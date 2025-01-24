@@ -1,5 +1,5 @@
 {
-  "image": "gcc:12",
+  "image": "mcr.microsoft.com/devcontainers/base:debian-12",
   "waitFor": "onCreateCommand",
   "postAttachCommand": {
     "server": "./compile.sh 1"
